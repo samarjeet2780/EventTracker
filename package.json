@@ -2,9 +2,10 @@
   "name": "todo-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",  // Set this to the entry point file for your backend
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",  // Start script to run the backend server
+    "build": "echo \"No build step necessary\""  // Optional: Placeholder if no frontend build is required
   },
   "keywords": [],
   "author": "",
