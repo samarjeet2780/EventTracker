@@ -1,0 +1,75 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+    <h2>Add a New Task</h2>
+    <form id="task-form" enctype="multipart/form-data">
+    <label for="title">Task Title:</label>
+    <input type="text" name="title" id="title" required>
+
+    <label for="description">Description:</label>
+    <textarea name="description" id="description"></textarea>
+
+    <label for="due-date">Due Date:</label>
+    <input type="date" name="dueDate" id="due-date">
+
+    <label for="file">Attach a file:</label>
+    <input type="file" name="file" id="file">
+
+    <button type="submit">Add Task</button>
+</form>
+
+
+<div class="task-list" id="task-list">
+    {% for task in tasks %}
+        <div class="task">
+            <h2 class="task-title"> <a href="/task/{{ task.id }}">{{ task.title }}</a> </h2>
+            <p class="task-description"> {{ task.description }}</p>
+            <p class="task-dueDate">Due Date: {{ task.dueDate }}</p>
+            {% if task.file %}
+                <a href="/download/{{ task.file }}" class="task-link">Download</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    // AJAX using Fetch API
+const form = document.getElementById('task-form');
+form.addEventListener('submit', async function (e) {
+    e.preventDefault(); 
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch('/add-task', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();  // Expect JSON response from server
+        if (response.ok) {
+            // Task successfully added, now update the UI dynamically
+            const taskList = document.getElementById('task-list');
+            
+            // Create new task element and add it to the task list
+            const newTask = document.createElement('div');
+            newTask.classList.add('task');
+            newTask.innerHTML = `
+                <a href="/task/${result.id}" class="task-title">${result.title}</a>
+                <p class="task-description">${result.description}</p>
+                <p class="task-dueDate">Due Date: ${result.dueDate}</p>
+                ${result.file ? `<a href="/download/${result.file}" class="task-link">Download</a>` : ''}
+            `;
+            taskList.appendChild(newTask);
+
+            form.reset();  // Reset the form after successful submission
+        } else {
+            console.error('Failed to add task:', result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3dcc6; 
+    color: #333; 
+    margin: 0;
+    padding: 20px;
+}
+
+
+header {
+    background-color: #65430e;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+}
+
+#toggle-theme{
+    background-color: #2720ea;
+    color: #dedee1;
+}
+
+main {
+    margin-top: 20px;
+}
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.task-list {
+    margin: 20px 0;
+}
+
+.task {
+    margin: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff; 
+}
+
+.task-title {
+    font-size: 1.5em;
+    margin: 5px;
+    color: #ff7b00;
+}
+
+.task-description {
+    font-size: 1.2em;
+    margin-left: 5px; 
+    margin-right: 5px;
+}
+
+.due-date {
+    font-size: 1em;
+    margin: 5px 0; 
+}
+
+.task-link {
+    color: rgb(240, 20, 57); 
+    text-decoration: none; 
+}
+
+
+.task-link:hover {
+    text-decoration: underline; 
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #333; 
+    color: white; 
+}
+
+header.dark-mode {
+    background-color: #555; 
+}
+
+.task.dark-mode {
+    background-color: #444;
+    border-color: #666; 
+}
