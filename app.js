@@ -9,6 +9,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 const {MONGODB, SESSION} = require("./credentials");
 const { seedUser, User, hashPassword } = require("./auth");  // Import from auth.js
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 3000;
@@ -106,33 +107,56 @@ app.get('/register', (req, res) => {
 });
 
 
-app.post('/register', async (req, res) => {
-    const { username, password } = req.body;  // Getting username and password from the request body
+// app.post('/register', async (req, res) => {
+//     const { username, password } = req.body;  // Getting username and password from the request body
     
-    try {
-        // Step 1: Hash the password and get the salt
-        const { hashedPassword, salt } = await hashPassword(password);
+//     try {
+//         // Step 1: Hash the password and get the salt
+//         const { hashedPassword, salt } = await hashPassword(password);
 
-        // Step 2: Create a new user with the hashed password and the salt
+//         // Step 2: Create a new user with the hashed password and the salt
+//         const newUser = new User({
+//             user: username,
+//             hash: hashedPassword, // Store the full bcrypt hash
+//             salt: salt            // Store the generated salt
+//         });
+
+//         // Step 3: Save the new user to the database
+//         const result = await newUser.save();
+//         console.log('User registered:', result);
+
+//         // Step 4: Redirect to login or send a success message
+//         res.redirect('/login');
+//     } catch (error) {
+//         console.error('Error during registration:', error);
+//         res.status(500).send('Registration failed');
+//     }
+// });
+
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        // Hash the password
+        const hashedPassword = await hashPassword(password);
+
+        // Create a new user with the hashed password
         const newUser = new User({
             user: username,
-            hash: hashedPassword, // Store the full bcrypt hash
-            salt: salt            // Store the generated salt
+            hash: hashedPassword,
         });
 
-        // Step 3: Save the new user to the database
+        // Save the user to the database
         const result = await newUser.save();
         console.log('User registered:', result);
 
-        // Step 4: Redirect to login or send a success message
+        // Redirect to login
         res.redirect('/login');
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).send('Registration failed');
     }
 });
-
-
 
 
 
@@ -154,17 +178,17 @@ app.get('/login', (req, res) => {
 });
 
 
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
+// app.post('/login', (req, res) => {
+//     const { username, password } = req.body;
 
-    // Hardcoded credentials for simplicity (replace with a real user authentication system)
-    if (username === 'user' && password === 'password') {
-        req.session.user = { username }; // Store user info in session
-        res.redirect('/'); // Redirect to homepage after login
-    } else {
-        res.status(400).json({ error: 'Invalid credentials' });
-    }
-});
+//     // Hardcoded credentials for simplicity (replace with a real user authentication system)
+//     if (username === 'user' && password === 'password') {
+//         req.session.user = { username }; // Store user info in session
+//         res.redirect('/'); // Redirect to homepage after login
+//     } else {
+//         res.status(400).json({ error: 'Invalid credentials' });
+//     }
+// });
 
 // app.post('/login', async (req, res) => {
 //     const { username, password } = req.body;
@@ -191,6 +215,32 @@ app.post('/login', (req, res) => {
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // });
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        // Find the user by username from the database
+        const user = await User.findOne({ user: username });
+
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid credentials' });
+        }
+
+        // Compare the entered password with the stored hashed password
+        const isMatch = await bcrypt.compare(password, user.hash);
+
+        if (isMatch) {
+            req.session.user = { username }; // Store user info in session
+            res.redirect('/'); // Redirect to homepage after login
+        } else {
+            res.status(400).json({ error: 'Invalid credentials' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 app.get('/logout', (req, res) => {

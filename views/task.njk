@@ -5,9 +5,6 @@
         <h2 class="task-title">{{ task.title }}</h2>
         <p class="task-description">{{ task.description }}</p>
         <p class="due-date">Due Date: {{ task.dueDate }}</p>
-        {% if task.file %}
-            <a href="/download/{{ task.file }}" class="task-link"> Download Attachment</a>
-        {% endif %}
     </div>
     
     <a href="/">Back to Tasks</a>
