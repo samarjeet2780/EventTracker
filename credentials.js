@@ -1,10 +1,10 @@
 const MONGODB = {
-    user: "student",
-    password: "ACS-3909"
+    user: "",
+    password: ""
 }
 
 const SESSION = {
-    secret: "My super secret"
+    secret: ""
 }
 
 module.exports = {
