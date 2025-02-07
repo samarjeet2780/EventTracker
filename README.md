@@ -63,7 +63,12 @@ Copy and Edit: This command will start both frontend and backend applications.
 ## 📸 Screenshots
 
 - **Light Mode**
+<img width="922" alt="lighttheme-eventtracker" src="https://github.com/user-attachments/assets/06b1cfeb-5885-4052-b5aa-b666d58c3c62" />
+
+
+
 - **Dark Mode**
+<img width="922" alt="darktheme-eventracker" src="https://github.com/user-attachments/assets/14709360-5a06-4d32-924b-4d0feefc97a1" />
 
 ---
 
